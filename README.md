@@ -10,10 +10,9 @@
 [Hakase's Marumaru API](https://marumaru.hakase.kr/)
 
 ## 사용 방법
-1. 해당 파일을 다운로드 받아서 권한을 777로 주면 끝납니다 (...)
-1-1. 권한은 cookie.txt, mangalist.txt (쿠키 캐싱) 파일을 생성하기 위해 필요합니다.
-2. api 관련 rewrite 는 아래를 참고하십시오. (nginx 기준)
-2-1. rewrite 없이 사용하려면 소스를 수정하셔야 합니다.
+1. 해당 파일을 다운로드 받아서 권한을 777로 주면 끝납니다. 권한은 cookie.txt, mangalist.txt (쿠키 캐싱) 파일을 생성하기 위해 필요합니다.
+2. api 관련 rewrite 는 아래를 참고하십시오. (nginx 기준) rewrite 없이 사용하려면 소스를 수정하셔야 합니다.
+  
 ```
 rewrite ^/api/(.*)/(.*)$ /index.php?num=$1&json=1;
 rewrite ^/api/(.*)$ /index.php?num=$1;
