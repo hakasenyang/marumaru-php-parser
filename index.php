@@ -38,7 +38,7 @@ Other error : read the message</p>
 <p>Output only JSON (Example) {"error":1,"message":"Error Message)"}<br>
 Only error / message method use</p>
 <h2>Etc...</h2>
-<p><strong><i><u>No Open Source. - I just not want.<br>오픈 소스 계획 없음. - 그냥 하기 싫어.</u></i></strong></p>
+<p><strong><i><u><a href="https://github.com/hakasenyang/marumaru-php-parser" target="_blank">Open Source</a></u></i></strong></p>
 <p>Developed by <a href="https://keybase.io/hakasekr" rel="noreferrer" target="_blank">Hakase</a> (contact@hakase.kr)<br>
 사용은 자유고 제한 없음. 애초에 제한 있으면 API 인증키를 넣겠지만 귀찮아서 안 넣음.
 </p>
