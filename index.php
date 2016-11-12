@@ -2,6 +2,7 @@
 	include_once '_function.php';
 	$marumaru = new Marumaru();
 	$num = $_GET['num'];
+	$image = $_GET['image'];
 	if(!is_numeric($num) || strpos($num, '.'))
 	{
 ?>
@@ -82,39 +83,47 @@ startdata:
 	$title = trim(explode(' | ', $title)[0]);
 	$data2 = explode('<option value="', str_replace(' selected>', '>', $data));
 
-	for($i=1;$i<count($data2);$i++)
+	if ($image)
 	{
-		if($num == trim(explode('">', $data2[$i])[0]))
-		{
-			if($i != count($data2) - 1)
-			{
-				$nextid = trim(explode('">', $data2[$i+1])[0]);
-				$nextname = trim(explode('</option>', explode('">', $data2[$i+1])[1])[0]);
-			}
-			if($i != 1)
-			{
-				$previd = trim(explode('">', $data2[$i-1])[0]);
-				$prevname = trim(explode('</option>', explode('">', $data2[$i-1])[1])[0]);
-			}
-			continue;
-		}
-		$aac[] = [trim(explode('">', $data2[$i])[0]) => trim(explode('</option>', explode('">', $data2[$i])[1])[0])];
-	}
-	if($previd || $nextid)
-	{
-		if($previd) $aad[] = ['prev'=>[$previd=>$prevname]]; else $aad[] = ['prev'=>null];
-		if($nextid) $aad[] = ['next'=>[$nextid=>$nextname]]; else $aad[] = ['next'=>null];
-	}
-	for($i=1;$i<count($aaa);$i++)
-		$aab[] = trim(explode('"', $aaa[$i])[0]);
+		$jsonon = ($_GET['json'] == 1) ? true : false;
+		$aaa = explode('data-src="', $data);
 
-	if($jsonon)
-	{
-		$aaaa = array('title'=>$title, 'url'=>$aab, 'explorer'=>$aac, 'prevnext'=>$aad);
-		echo json_encode($aaaa);
+		for($i=1;$i<count($aaa);$i++)
+		    echo '<img src="'.trim(explode('"', $aaa[$i])[0]).'"><br>';
 	}
 	else
-		echo $title.PHP_EOL.implode(PHP_EOL, $aab);
+	{
+		for($i=1;$i<count($data2);$i++)
+		{
+			if($num == trim(explode('">', $data2[$i])[0]))
+			{
+				if($i != count($data2) - 1)
+				{
+					$nextid = trim(explode('">', $data2[$i+1])[0]);
+					$nextname = trim(explode('</option>', explode('">', $data2[$i+1])[1])[0]);
+				}
+				if($i != 1)
+				{
+					$previd = trim(explode('">', $data2[$i-1])[0]);
+					$prevname = trim(explode('</option>', explode('">', $data2[$i-1])[1])[0]);
+				}
+				continue;
+			}
+			$aac[] = [trim(explode('">', $data2[$i])[0]) => trim(explode('</option>', explode('">', $data2[$i])[1])[0])];
+		}
+		if($previd || $nextid)
+		{
+			if($previd) $aad[] = ['prev'=>[$previd=>$prevname]]; else $aad[] = ['prev'=>null];
+			if($nextid) $aad[] = ['next'=>[$nextid=>$nextname]]; else $aad[] = ['next'=>null];
+		}
+		for($i=1;$i<count($aaa);$i++)
+			$aab[] = trim(explode('"', $aaa[$i])[0]);
 
-
-	exit;
+		if($jsonon)
+		{
+			$aaaa = array('title'=>$title, 'url'=>$aab, 'explorer'=>$aac, 'prevnext'=>$aad);
+			echo json_encode($aaaa);
+		}
+		else
+			echo $title.PHP_EOL.implode(PHP_EOL, $aab);
+	}

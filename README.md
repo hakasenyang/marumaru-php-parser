@@ -14,11 +14,11 @@
 2. 권한은 cookie.txt, mangalist.txt (쿠키 캐싱) 파일을 생성하기 위해 필요합니다.
 3. api 관련 rewrite 는 아래를 참고하십시오. (nginx 기준)
 4. rewrite 없이 사용하려면 소스를 수정하셔야 합니다.
-  
+
 ```
 rewrite ^/api/(.*)/(.*)$ /index.php?num=$1&json=1;
 rewrite ^/api/(.*)$ /index.php?num=$1;
-rewrite ^/img/(.*)$ /image.php?num=$1;
+rewrite ^/img/(.*)$ /index.php?num=$1&image=1;
 rewrite ^/fmaru$ /fmaru.php;
 ```
 
