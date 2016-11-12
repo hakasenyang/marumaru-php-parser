@@ -68,14 +68,21 @@ startdata:
         $num = explode('/', $marumaru->splits($data, 'Location: ', PHP_EOL))[4];
         $data = $marumaru->WEBParsing('http://www.yuncomics.com/archives/'.$num, $cookie.$cookie2);
     }*/
-    if(stripos($data, 'HTTP/1.1 404 Not Found') !== false || stripos($data, 'HTTP/1.1 301 Moved Permanently') !== false) $marumaru->ErrorEcho(4);
-    if(stripos($data, 'HTTP/1.1 200 OK') === false) $marumaru->ErrorEcho(0);
+    if(stripos($data, 'HTTP/1.1 404 Not Found') !== false ||
+       stripos($data, 'HTTP/1.1 301 Moved Permanently') !== false)
+        $marumaru->ErrorEcho(4);
+    if(stripos($data, 'HTTP/1.1 200 OK') === false)
+        $marumaru->ErrorEcho(0);
     if(stripos($data, 'This content is password protected.') !== false)
-        if($caches > 5) $marumaru->ErrorEcho(3);
-        else goto startdata;
+        if($caches > 5)
+            $marumaru->ErrorEcho(3);
+        else
+            goto startdata;
     if(stripos($data, 'You are being redirected...') !== false)
-        if($caches > 2) $marumaru->ErrorEcho(1);
-        else goto cookieget;
+        if($caches > 2)
+            $marumaru->ErrorEcho(1);
+        else
+            goto cookieget;
 
     $jsonon = ($_GET['json'] == 1) ? true : false;
     $aaa = explode('data-src="', $data);
@@ -113,15 +120,24 @@ startdata:
         }
         if($previd || $nextid)
         {
-            if($previd) $aad[] = ['prev'=>[$previd=>$prevname]]; else $aad[] = ['prev'=>null];
-            if($nextid) $aad[] = ['next'=>[$nextid=>$nextname]]; else $aad[] = ['next'=>null];
+            if($previd)
+                $aad[] = ['prev'=>[$previd=>$prevname]];
+            else
+                $aad[] = ['prev'=>null];
+            if($nextid)
+                $aad[] = ['next'=>[$nextid=>$nextname]];
+            else
+                $aad[] = ['next'=>null];
         }
         for($i=1;$i<count($aaa);$i++)
             $aab[] = trim(explode('"', $aaa[$i])[0]);
 
         if($jsonon)
         {
-            $aaaa = array('title'=>$title, 'url'=>$aab, 'explorer'=>$aac, 'prevnext'=>$aad);
+            $aaaa = array('title'=>$title,
+                          'url'=>$aab,
+                          'explorer'=>$aac,
+                          'prevnext'=>$aad);
             echo json_encode($aaaa);
         }
         else
