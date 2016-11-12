@@ -1,10 +1,10 @@
 <?php
-	include_once '_function.php';
-	$marumaru = new Marumaru();
-	$num = $_GET['num'];
-	$image = $_GET['image'];
-	if(!is_numeric($num) || strpos($num, '.'))
-	{
+    include_once '_function.php';
+    $marumaru = new Marumaru();
+    $num = $_GET['num'];
+    $image = $_GET['image'];
+    if(!is_numeric($num) || strpos($num, '.'))
+    {
 ?>
 <!doctype html><html><head><title>Yuncomics(marumaru.in) Image URL Parser API</title><meta charset="UTF-8">
 <style>body img { width: auto; height: auto; max-width: 100%;
@@ -46,84 +46,84 @@ Only error / message method use</p>
 </body>
 </html>
 <?php
-		exit;
-	}
+        exit;
+    }
 
 cookieget:
-	$dd = $marumaru->FileRead();
-	if(!$dd || explode(PHP_EOL, $dd)[0] < time())
-	{
-		$cookie = $marumaru->GetCookie();
-		if(!$cookie) $marumaru->ErrorEcho(2);
-		$marumaru->FileWrite($cookie);
-	}
-	else
-		$cookie = explode(PHP_EOL, $dd)[1];
+    $dd = $marumaru->FileRead();
+    if(!$dd || explode(PHP_EOL, $dd)[0] < time())
+    {
+        $cookie = $marumaru->GetCookie();
+        if(!$cookie) $marumaru->ErrorEcho(2);
+        $marumaru->FileWrite($cookie);
+    }
+    else
+        $cookie = explode(PHP_EOL, $dd)[1];
 
 startdata:
-	$caches++;
-	$data = $marumaru->WEBParsing('http://www.yuncomics.com/archives/'.$num, $cookie);
-	/*if(stripos($data, 'HTTP/1.1 301 Moved Permanently') !== false)
-	{
-		$num = explode('/', $marumaru->splits($data, 'Location: ', PHP_EOL))[4];
-		$data = $marumaru->WEBParsing('http://www.yuncomics.com/archives/'.$num, $cookie.$cookie2);
-	}*/
-	if(stripos($data, 'HTTP/1.1 404 Not Found') !== false || stripos($data, 'HTTP/1.1 301 Moved Permanently') !== false) $marumaru->ErrorEcho(4);
-	if(stripos($data, 'HTTP/1.1 200 OK') === false) $marumaru->ErrorEcho(0);
-	if(stripos($data, 'This content is password protected.') !== false)
-		if($caches > 5) $marumaru->ErrorEcho(3);
-		else goto startdata;
-	if(stripos($data, 'You are being redirected...') !== false)
-		if($caches > 2) $marumaru->ErrorEcho(1);
-		else goto cookieget;
+    $caches++;
+    $data = $marumaru->WEBParsing('http://www.yuncomics.com/archives/'.$num, $cookie);
+    /*if(stripos($data, 'HTTP/1.1 301 Moved Permanently') !== false)
+    {
+        $num = explode('/', $marumaru->splits($data, 'Location: ', PHP_EOL))[4];
+        $data = $marumaru->WEBParsing('http://www.yuncomics.com/archives/'.$num, $cookie.$cookie2);
+    }*/
+    if(stripos($data, 'HTTP/1.1 404 Not Found') !== false || stripos($data, 'HTTP/1.1 301 Moved Permanently') !== false) $marumaru->ErrorEcho(4);
+    if(stripos($data, 'HTTP/1.1 200 OK') === false) $marumaru->ErrorEcho(0);
+    if(stripos($data, 'This content is password protected.') !== false)
+        if($caches > 5) $marumaru->ErrorEcho(3);
+        else goto startdata;
+    if(stripos($data, 'You are being redirected...') !== false)
+        if($caches > 2) $marumaru->ErrorEcho(1);
+        else goto cookieget;
 
-	$jsonon = ($_GET['json'] == 1) ? true : false;
-	$aaa = explode('data-src="', $data);
-	$title = $marumaru->splits($aaa[0], '<title>', '</title>');
-	$title = trim(explode(' | ', $title)[0]);
-	$data2 = explode('<option value="', str_replace(' selected>', '>', $data));
+    $jsonon = ($_GET['json'] == 1) ? true : false;
+    $aaa = explode('data-src="', $data);
+    $title = $marumaru->splits($aaa[0], '<title>', '</title>');
+    $title = trim(explode(' | ', $title)[0]);
+    $data2 = explode('<option value="', str_replace(' selected>', '>', $data));
 
-	if ($image)
-	{
-		$jsonon = ($_GET['json'] == 1) ? true : false;
-		$aaa = explode('data-src="', $data);
+    if ($image)
+    {
+        $jsonon = ($_GET['json'] == 1) ? true : false;
+        $aaa = explode('data-src="', $data);
 
-		for($i=1;$i<count($aaa);$i++)
-		    echo '<img src="'.trim(explode('"', $aaa[$i])[0]).'"><br>';
-	}
-	else
-	{
-		for($i=1;$i<count($data2);$i++)
-		{
-			if($num == trim(explode('">', $data2[$i])[0]))
-			{
-				if($i != count($data2) - 1)
-				{
-					$nextid = trim(explode('">', $data2[$i+1])[0]);
-					$nextname = trim(explode('</option>', explode('">', $data2[$i+1])[1])[0]);
-				}
-				if($i != 1)
-				{
-					$previd = trim(explode('">', $data2[$i-1])[0]);
-					$prevname = trim(explode('</option>', explode('">', $data2[$i-1])[1])[0]);
-				}
-				continue;
-			}
-			$aac[] = [trim(explode('">', $data2[$i])[0]) => trim(explode('</option>', explode('">', $data2[$i])[1])[0])];
-		}
-		if($previd || $nextid)
-		{
-			if($previd) $aad[] = ['prev'=>[$previd=>$prevname]]; else $aad[] = ['prev'=>null];
-			if($nextid) $aad[] = ['next'=>[$nextid=>$nextname]]; else $aad[] = ['next'=>null];
-		}
-		for($i=1;$i<count($aaa);$i++)
-			$aab[] = trim(explode('"', $aaa[$i])[0]);
+        for($i=1;$i<count($aaa);$i++)
+            echo '<img src="'.trim(explode('"', $aaa[$i])[0]).'"><br>';
+    }
+    else
+    {
+        for($i=1;$i<count($data2);$i++)
+        {
+            if($num == trim(explode('">', $data2[$i])[0]))
+            {
+                if($i != count($data2) - 1)
+                {
+                    $nextid = trim(explode('">', $data2[$i+1])[0]);
+                    $nextname = trim(explode('</option>', explode('">', $data2[$i+1])[1])[0]);
+                }
+                if($i != 1)
+                {
+                    $previd = trim(explode('">', $data2[$i-1])[0]);
+                    $prevname = trim(explode('</option>', explode('">', $data2[$i-1])[1])[0]);
+                }
+                continue;
+            }
+            $aac[] = [trim(explode('">', $data2[$i])[0]) => trim(explode('</option>', explode('">', $data2[$i])[1])[0])];
+        }
+        if($previd || $nextid)
+        {
+            if($previd) $aad[] = ['prev'=>[$previd=>$prevname]]; else $aad[] = ['prev'=>null];
+            if($nextid) $aad[] = ['next'=>[$nextid=>$nextname]]; else $aad[] = ['next'=>null];
+        }
+        for($i=1;$i<count($aaa);$i++)
+            $aab[] = trim(explode('"', $aaa[$i])[0]);
 
-		if($jsonon)
-		{
-			$aaaa = array('title'=>$title, 'url'=>$aab, 'explorer'=>$aac, 'prevnext'=>$aad);
-			echo json_encode($aaaa);
-		}
-		else
-			echo $title.PHP_EOL.implode(PHP_EOL, $aab);
-	}
+        if($jsonon)
+        {
+            $aaaa = array('title'=>$title, 'url'=>$aab, 'explorer'=>$aac, 'prevnext'=>$aad);
+            echo json_encode($aaaa);
+        }
+        else
+            echo $title.PHP_EOL.implode(PHP_EOL, $aab);
+    }
