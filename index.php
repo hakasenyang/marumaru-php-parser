@@ -51,7 +51,7 @@ Only error / message method use</p>
 
 cookieget:
     $dd = $marumaru->FileRead();
-    if(!$dd || explode(PHP_EOL, $dd)[0] < time())
+    if(!$dd || explode(PHP_EOL, $dd)[0] < time() || $tmp > 1 || $tmp2 > 3)
     {
         $cookie = $marumaru->GetCookie();
         if(!$cookie) $marumaru->ErrorEcho(2);
@@ -77,12 +77,18 @@ startdata:
         if($caches > 5)
             $marumaru->ErrorEcho(3);
         else
+        {
+            $tmp2++;
             goto startdata;
+        }
     if(stripos($data, 'You are being redirected...') !== false)
         if($caches > 2)
             $marumaru->ErrorEcho(1);
         else
+        {
+            $tmp++;
             goto cookieget;
+        }
 
     $jsonon = ($_GET['json'] == 1) ? true : false;
     $aaa = explode('data-src="', $data);
