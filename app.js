@@ -279,8 +279,8 @@ var EpisodePage = function (_React$Component) {
     key: '_convertUrl',
     value: function _convertUrl(url) {
       if (url.toLowerCase().indexOf("yuncomic") > -1) {
-        var comps = url.split('/').slice(3);
-        return config.apiUrl + "/image_parse.php?url=" + url;
+        //var comps = url.split('/').slice(3);
+        //return config.apiUrl + "/image_parse.php?url=" + url;
         //return config.apiUrl + "/image/" + comps.join("/");
       }
       return url;
@@ -536,9 +536,9 @@ var MangaItem = function (_React$Component) {
 
       var imageUrl = this.state.detail.cover;
       if (imageUrl.indexOf("marumaru.in") > -1) {
-        var comps = imageUrl.split("\/").slice(3);
+        //var comps = imageUrl.split("\/").slice(3);
         //imageUrl = config.apiUrl + "/preview/" + comps.join("/");
-        imageUrl = config.apiUrl + "/image_parse.php?url=" + imageUrl;
+        //imageUrl = config.apiUrl + "/image_parse.php?url=" + imageUrl;
       }
 
       var content = _react2.default.createElement(
