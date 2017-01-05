@@ -11,9 +11,6 @@
         }
         public function WEBParsing($url, $cookie=NULL, $headershow=TRUE, $postparam=NULL, $otherheader=NULL)
         {
-            $uri = parse_url($url);
-            if (!isset($uri['port'])) $uri['port'] = 80;
-            if (!isset($uri['path'])) $uri['path'] = "/";
             $ch = curl_init();
             $opts = array(CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_URL => $url,
@@ -44,8 +41,9 @@
          * 소스 : http://cafe.naver.com/gogoomas/337647
          * @param  string $result 쿠키 string 입력
          * @return strring         쿠키 데이터 출력
+         * 사용하지 않음.
          */
-        public function sucuri($result)
+        /*public function sucuri($result)
         {
             if(strpos($result, 'sucuri_cloudproxy_js') !== false)
             {
@@ -174,7 +172,7 @@
                 // String Output
                 return $cp_cnam_string."=".$cp_cval_string;
             }
-        }
+        }*/
         public function FileRead($filename=NULL)
         {
             $filename = ($filename) ? $filename : $this->fname;
@@ -195,17 +193,16 @@
         }
         public function GetCookie()
         {
-            $data = $this->WEBParsing('http://www.yuncomics.com/archives/');
+            /*$data = $this->WEBParsing('http://wasabisyrup.com/archives/');
             $cookie = $this->splits($data, '<script>', '</script>');
-            $cookie = $this->sucuri($cookie);
-            $data = $this->WEBParsing('http://www.yuncomics.com/wp-login.php?action=postpass', $cookie, true, 'post_password=qndxkr&Submit=Submit',
+            $cookie = $this->sucuri($cookie);*/
+            $data = $this->WEBParsing('http://wasabisyrup.com/archives/455742', $cookie, true, 'pass=qndxkr',
                 array(
-                    'Referer: http://www.yuncomics.com/'
+                    'Referer: http://wasabisyrup.com/'
                 )
             );
-            $cookie2 = $this->splits($data, 'Set-Cookie: wp-postpass_', ';');
-            $cookie2 = ';wp-postpass_'.$cookie2.';wordpress_test_cookie=WP+Cookie+check;_mcnc=1;';
-            $cookie .= $cookie2;
+            $cookie = $this->splits($data, 'Set-Cookie: PHPSESSID=', ';');
+            $cookie = 'PHPSESSID=' . $cookie . ';';
             if(!$cookie) return false; else     return $cookie;
         }
         public function ErrorEcho($num,$err=NULL)
@@ -217,7 +214,7 @@
                 switch($num)
                 {
                     case 0:
-                        $err='Connect Error (yuncomics 403 or other error)';
+                        $err='Connect Error (wasabisyrup 403 or other error)';
                         break;
                     case 1:
                         $err='Cookie Send Error (Not applied sucuri cookie data)';

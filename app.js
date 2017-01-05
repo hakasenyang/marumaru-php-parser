@@ -278,7 +278,7 @@ var EpisodePage = function (_React$Component) {
   }, {
     key: '_convertUrl',
     value: function _convertUrl(url) {
-      if (url.toLowerCase().indexOf("yuncomic") > -1) {
+      if (url.toLowerCase().indexOf("wasabisyrup") > -1) {
         //var comps = url.split('/').slice(3);
         //return config.apiUrl + "/image_parse.php?url=" + url;
         //return config.apiUrl + "/image/" + comps.join("/");

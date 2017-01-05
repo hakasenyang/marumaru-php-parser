@@ -3,22 +3,22 @@
     $marumaru = new Marumaru();
     $num = $_GET['num'];
     $image = $_GET['image'];
-    if(!is_numeric($num) || strpos($num, '.'))
+    if(!isset($num))
     {
 ?>
-<!doctype html><html><head><title>Yuncomics(marumaru.in) Image URL Parser API</title><meta charset="UTF-8">
+<!doctype html><html><head><title>wasabisyrup(marumaru.in) Image URL Parser API</title><meta charset="UTF-8">
 <style>body img { width: auto; height: auto; max-width: 100%;
 }</style>
 <link rel="shortcut icon" href="favicon.ico">
 </head><body>
-<h1>Yuncomics(marumaru.in) <u>Image URL</u> Parser API</h1>
-<p>Using: /api/{yuncomics number}/{1 or 0(null)}<br>
+<h1>wasabisyrup(marumaru.in) <u>Image URL</u> Parser API</h1>
+<p>Using: /api/{wasabisyrup number}/{1 or 0(null)}<br>
 Use only application/web/other developers.</p>
 <h2>Example</h2>
-<p>no json - <a href="/api/553645" target="_blank">/api/553645 (Gochuumon wa Usagi desuka?)</a><br>
-json - <a href="/api/553645/1" target="_blank">/api/553645/1 (Gochuumon wa Usagi desuka?)</a><br>
+<p>no json - <a href="/api/93" target="_blank">/api/93 (Himouto Umaru-Chan)</a><br>
+json - <a href="/api/93/1" target="_blank">/api/93/1 (Himouto Umaru-Chan?)</a><br>
 <a href="https://github.com/fmaru/fmaru" rel="noreferrer" target="_blank">fmaru</a> php porting by hakase - <a href="/fmaru" target="_blank">/fmaru</a><br>
-image direct view - <a href="/img/553645" target="_blank">/img/553645 (Gochuumon wa Usagi desuka?)</a></p>
+image direct view - <a href="/img/93" target="_blank">/img/93 (Himouto Umaru-Chan)</a></p>
 <h2>JSON Type</h2>
 <p>title : Manga Subject<br>
 url : Image URL<br>
@@ -30,7 +30,7 @@ prevnext : Next Episode / Prev Episode (if not data, show null value)<br>
 <p>First Line : Manga Subject<br>
 Other Line : Image URL</p>
 <h2>Error Message</h2>
-<p>Number 0 : Connect Error (yuncomics 403 or other error)<br>
+<p>Number 0 : Connect Error (wasabisyrup 403 or other error)<br>
 Number 1 : Cookie Send Error (Not applied sucuri cookie data)<br>
 Number 2 : Cookie Get Error<br>
 Number 3 : Password Error (Protected archive) - Retry 10 minutes after view or retry about 3 times)<br>
@@ -62,7 +62,7 @@ cookieget:
 
 startdata:
     $caches++;
-    $data = $marumaru->WEBParsing('http://www.yuncomics.com/archives/'.$num, $cookie);
+    $data = $marumaru->WEBParsing('http://wasabisyrup.com/archives/'.$num, $cookie);
     /*if(stripos($data, 'HTTP/1.1 301 Moved Permanently') !== false)
     {
         $num = explode('/', $marumaru->splits($data, 'Location: ', PHP_EOL))[4];
@@ -73,7 +73,7 @@ startdata:
         $marumaru->ErrorEcho(4);
     if(stripos($data, 'HTTP/1.1 200 OK') === false)
         $marumaru->ErrorEcho(0);
-    if(stripos($data, 'This content is password protected.') !== false)
+    if(stripos($data, '<h2>Protected</h2>') !== false)
         if($caches > 5)
             $marumaru->ErrorEcho(3);
         else
@@ -81,25 +81,27 @@ startdata:
             $tmp2++;
             goto startdata;
         }
-    if(stripos($data, 'You are being redirected...') !== false)
+    /*if(stripos($data, 'You are being redirected...') !== false)
         if($caches > 2)
             $marumaru->ErrorEcho(1);
         else
         {
             $tmp++;
             goto cookieget;
-        }
+        }*/
 
     $jsonon = ($_GET['json'] == 1) ? true : false;
     $aaa = explode('data-src="', $data);
     $title = $marumaru->splits($aaa[0], '<title>', '</title>');
     $title = trim(explode(' | ', $title)[0]);
-    $data2 = explode('<option value="', str_replace(' selected>', '>', $data));
+    $data2 = $marumaru->splits($data, '<select class="list-articles select-js-inline select-js-nofocus select-js-inline-right">', '</select>');
+    $data2 = explode('<option value="', str_replace('selected>', '>', $data2));
+    $data2 = str_replace(array("\t", PHP_EOL), NULL, $data2);
 
     if ($image)
     {
         $jsonon = ($_GET['json'] == 1) ? true : false;
-        $aaa = explode('data-src="', $data);
+        $aaa = explode('data-src="', str_replace('data-src="/storage/', 'data-src="http://wasabisyrup.com/storage/', $data));
 
         for($i=1;$i<count($aaa);$i++)
             echo '<img src="'.trim(explode('"', $aaa[$i])[0]).'"><br>';
@@ -108,21 +110,21 @@ startdata:
     {
         for($i=1;$i<count($data2);$i++)
         {
-            if($num == trim(explode('">', $data2[$i])[0]))
+            if($num == trim(explode('" >', $data2[$i])[0]))
             {
                 if($i != count($data2) - 1)
                 {
-                    $nextid = trim(explode('">', $data2[$i+1])[0]);
-                    $nextname = trim(explode('</option>', explode('">', $data2[$i+1])[1])[0]);
+                    $nextid = trim(explode('" >', $data2[$i+1])[0]);
+                    $nextname = trim(explode('</option>', explode('" >', $data2[$i+1])[1])[0]);
                 }
                 if($i != 1)
                 {
-                    $previd = trim(explode('">', $data2[$i-1])[0]);
-                    $prevname = trim(explode('</option>', explode('">', $data2[$i-1])[1])[0]);
+                    $previd = trim(explode('" >', $data2[$i-1])[0]);
+                    $prevname = trim(explode('</option>', explode('" >', $data2[$i-1])[1])[0]);
                 }
                 continue;
             }
-            $aac[] = [trim(explode('">', $data2[$i])[0]) => trim(explode('</option>', explode('">', $data2[$i])[1])[0])];
+            $aac[] = [trim(explode('" >', $data2[$i])[0]) => trim(explode('</option>', explode('" >', $data2[$i])[1])[0])];
         }
         if($previd || $nextid)
         {
