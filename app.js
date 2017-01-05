@@ -1621,16 +1621,17 @@ exports.default = {
 
   getImageList: function getImageList(mangaId, title, href) {
     _jquery2.default.get({
-      url: config.apiUrl + "/images.php",
+      url: config.apiUrl + "/index.php",
       data: {
-        href: href
+        num: href,
+        json: 1
       },
       success: function success(data) {
         if (typeof data == "string") {
           data = JSON.parse(data);
         }
 
-        _ApiActionCreators2.default.receiveImageList(mangaId, title, data.images);
+        _ApiActionCreators2.default.receiveImageList(mangaId, title, data.url);
       }
     });
   }
