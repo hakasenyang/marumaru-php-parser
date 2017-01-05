@@ -91,7 +91,7 @@ startdata:
         }*/
 
     $jsonon = ($_GET['json'] == 1) ? true : false;
-    $aaa = explode('data-src="', $data);
+    $aaa = explode('data-src="', str_replace('data-src="/storage/', 'data-src="http://wasabisyrup.com/storage/', $data));
     $title = $marumaru->splits($aaa[0], '<title>', '</title>');
     $title = trim(explode(' | ', $title)[0]);
     $data2 = $marumaru->splits($data, '<select class="list-articles select-js-inline select-js-nofocus select-js-inline-right">', '</select>');
@@ -101,7 +101,7 @@ startdata:
     if ($image)
     {
         $jsonon = ($_GET['json'] == 1) ? true : false;
-        $aaa = explode('data-src="', str_replace('data-src="/storage/', 'data-src="http://wasabisyrup.com/storage/', $data));
+        $aaa = explode('data-src="', $data);
 
         for($i=1;$i<count($aaa);$i++)
             echo '<img src="'.trim(explode('"', $aaa[$i])[0]).'"><br>';
