@@ -101,7 +101,6 @@ startdata:
     if ($image)
     {
         $jsonon = ($_GET['json'] == 1) ? true : false;
-        $aaa = explode('data-src="', $data);
 
         for($i=1;$i<count($aaa);$i++)
             echo '<img src="'.trim(explode('"', $aaa[$i])[0]).'"><br>';
