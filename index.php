@@ -3,6 +3,41 @@
     $marumaru = new Marumaru();
     $num = $_GET['num'];
     $image = $_GET['image'];
+    $imgurl = $_GET['imgurl'];
+
+    if(isset($imgurl))
+    {
+        $a = parse_url($imgurl);
+        switch($a['host'])
+        {
+            case 'www.yuncomics.com':
+            case 'wasabisyrup.com':
+            case 'blog.yuncomics.com':
+            case 'marumaru.in':
+            case 'www.wasabisyrup.com':
+                break;
+            default:
+                exit;
+        }
+
+        $last_modified = gmdate('D, d M Y H:i:s', time()) . ' GMT';
+        if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER))
+        {
+            $if_modified_since = strtotime(preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']));
+            if ($if_modified_since >= $last_modified)
+            {
+                header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
+                exit();
+            }
+        }
+
+        header('Cache-Control: max-age=86400, public');
+        header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s',time() + 86400 ) . ' GMT' );
+        header('Content-Type: image/jpeg');
+        echo $marumaru->WEBParsing($imgurl, NULL, NULL);
+        exit;
+    }
     if(!isset($num))
     {
 ?>
@@ -103,7 +138,7 @@ startdata:
         $jsonon = ($_GET['json'] == 1) ? true : false;
 
         for($i=1;$i<count($aaa);$i++)
-            echo '<img src="'.trim(explode('"', $aaa[$i])[0]).'"><br>';
+            echo '<img src="?imgurl='.urlencode(trim(explode('"', $aaa[$i])[0])).'"><br>';
     }
     else
     {
