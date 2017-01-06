@@ -51,7 +51,7 @@
 Use only application/web/other developers.</p>
 <h2>Example</h2>
 <p>no json - <a href="/api/93" target="_blank">/api/93 (Himouto Umaru-Chan)</a><br>
-json - <a href="/api/93/1" target="_blank">/api/93/1 (Himouto Umaru-Chan?)</a><br>
+json - <a href="/api/93/1" target="_blank">/api/93/1 (Himouto Umaru-Chan)</a><br>
 <a href="https://github.com/fmaru/fmaru" rel="noreferrer" target="_blank">fmaru</a> php porting by hakase - <a href="/fmaru" target="_blank">/fmaru</a><br>
 image direct view - <a href="/img/93" target="_blank">/img/93 (Himouto Umaru-Chan)</a></p>
 <h2>JSON Type</h2>
