@@ -13,9 +13,8 @@
             $id = explode('"', $a[$i])[0];
             $c[] = ['href'=>'/b/manga/'.$id, 'title'=>$name, 'id'=>$id];
         }
-        $marumaru->FileWrite(json_encode(array('list'=>$c)), 'mangalist.txt');
-        //$file = $marumaru->FileRead('mangalist.txt');
         $file = json_encode(array('list'=>$c));
+        $marumaru->FileWrite($file, 'mangalist.txt');
         echo $file;
         exit;
     }
