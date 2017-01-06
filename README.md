@@ -26,9 +26,13 @@ rewrite ^/fmaru$ /fmaru.php;
 Fmaru 관련 포팅의 원본 소스는 [fmaru's github](https://github.com/fmaru/fmaru) 에서 확인하실 수 있습니다.
 
 ## Sucuri proxy 소스
+```
 Sucuri proxy 관련 소스는 아래와 같은 사이트에서 가져왔습니다.
  * [organization's cloudflare-bypass](https://github.com/organization/cloudflare-bypass)
  * [코드팟's PHP Sucuri Proxy](http://cafe.naver.com/gogoomas/337647)
+```
+현재 yuncomics 에서 wasabisyrup 으로 교체되면서 Sucuri Proxy 가 적용되고 있지 않습니다.
+따라서 현재는 임시로 소스를 제거합니다.
 
 ## 저작권
 MIT License 를 따릅니다. fmaru 의 작품(?)처럼 마음껏 수정해서 광고를 달던 어떻게 사용하던 상관 없습니다.

@@ -12,7 +12,7 @@
 </head>
 <body style="margin:0px">
     <div id="contents"></div>
-    <script src="config.js"></script>
-    <script src="app.js"></script>
+    <script src="config.js?20170106"></script>
+    <script src="app.js?20170106"></script>
 </body>
 </html>
