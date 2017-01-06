@@ -66,7 +66,6 @@ prevnext : Next Episode / Prev Episode (if not data, show null value)<br>
 Other Line : Image URL</p>
 <h2>Error Message</h2>
 <p>Number 0 : Connect Error (wasabisyrup 403 or other error)<br>
-Number 1 : Cookie Send Error (Not applied sucuri cookie data)<br>
 Number 2 : Cookie Get Error<br>
 Number 3 : Password Error (Protected archive) - Retry 10 minutes after view or retry about 3 times)<br>
 Number 4 : Not found comics data<br>
