@@ -30,9 +30,9 @@
             }
 
             $data = curl_exec($ch);
-            curl_close($ch);
-            if ($curl_errno > 0)
+            if (curl_errno($ch))
                 $this->ErrorEcho(14, 'Connect Error!!!');
+            curl_close($ch);
             return ($data) ? $data : false;
         }
         public function FileRead($filename=NULL)

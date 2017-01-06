@@ -2,7 +2,7 @@
     include_once '_function.php';
     $marumaru = new Marumaru();
     $file = $marumaru->FileRead('mangalist.txt');
-    if(!$file || explode(PHP_EOL, $file)[0] < time())
+    if(!isset($file) || @explode(PHP_EOL, $file)[0] < time())
     {
         $data = $marumaru->WEBParsing('http://marumaru.in/c/1');
         $a = explode('" href="/b/manga/', $data);
@@ -14,7 +14,10 @@
             $c[] = ['href'=>'/b/manga/'.$id, 'title'=>$name, 'id'=>$id];
         }
         $marumaru->FileWrite(json_encode(array('list'=>$c)), 'mangalist.txt');
-        $file = $marumaru->FileRead('mangalist.txt');
+        //$file = $marumaru->FileRead('mangalist.txt');
+        $file = json_encode(array('list'=>$c));
+        echo $file;
+        exit;
     }
     echo explode(PHP_EOL, $file)[1];
     exit;
