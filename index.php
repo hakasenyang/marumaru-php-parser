@@ -170,7 +170,7 @@ startdata:
             else
                 $aad[] = ['next'=>null];
         }
-        for($i=1;$i<count($aaa);$i++)
+        for($i=2;$i<count($aaa)-1;$i++)
             $aab[] = trim(explode('"', $aaa[$i])[0]);
 
         if($jsonon)
