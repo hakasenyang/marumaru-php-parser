@@ -8,6 +8,16 @@
     if(isset($imgurl))
     {
         $a = parse_url($imgurl);
+        // Insecure checkup causes RFI
+        switch($a['scheme'])
+        {
+            case 'http':
+            case 'https':
+                break;
+            default:
+                exit;
+        }
+
         switch($a['host'])
         {
             case 'www.yuncomics.com':
