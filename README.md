@@ -7,7 +7,7 @@
 * 기타...
 
 ## 예시 사이트
-[Hakase's Marumaru API](https://marumaru.hakase.kr/)
+[Hakase's Marumaru API](https://marumaru.hakase.io/)
 
 ## 사용 방법
 1. 해당 파일을 다운로드 받아서 권한을 777로 주면 끝납니다.
