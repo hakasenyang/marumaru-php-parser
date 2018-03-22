@@ -6,6 +6,9 @@
 * marumaru API (이미지 주소를 json 으로 출력)
 * 기타...
 
+## 최신 버전
+[Gitlab](https://git.hakase.io/Hakase/marumaru-php-parser)
+
 ## 예시 사이트
 [Hakase's Marumaru API](https://marumaru.hakase.io/)
 
