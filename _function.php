@@ -1,7 +1,43 @@
 <?php
     class Marumaru {
-        private $httph = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36';
-        private $fname = 'cookie.txt';
+        private $httph = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36';
+        private $fname = 'cookie_hidden.txt';
+
+        public function linkencode ($url) {
+            $ta = parse_url($url);
+            if (!empty($ta['scheme']))
+                $ta['scheme'] .= '://';
+            if (!empty($ta['pass']) and !empty($ta['user']))
+            {
+                $ta['user'] = ':';
+                $ta['pass'] = rawurlencode($ta['pass']).'@';
+            }
+            elseif (!empty($ta['user']))
+                $ta['user'] .= '@';
+
+            if (!empty($ta['port']) and !empty($ta['host']))
+                $ta['host'] = ''.$ta['host'].':';
+            elseif (!empty($ta['host']))
+                $ta['host'] = $ta['host'];
+
+            if (!empty($ta['path']))
+            {
+                $tu = '';
+                $tok = strtok($ta['path'], "\\/");
+                while (strlen($tok))
+                {
+                    $tu .= rawurlencode($tok).'/';
+                    $tok = strtok("\\/");
+                }
+                $ta['path'] = '/'.trim($tu, '/');
+            }
+            if (!empty($ta['query']))
+                $ta['query'] = '?'.$ta['query'];
+            if (!empty($ta['fragment']))
+                $ta['fragment'] = '#'.$ta['fragment'];
+
+            return implode('', array($ta['scheme'], $ta['user'], $ta['pass'], $ta['host'], $ta['port'], $ta['path'], $ta['query'], $ta['fragment']));
+        }
         public function splits($data, $first, $end, $num = 1)
         {
             $temp = @explode($first, $data);
@@ -11,11 +47,13 @@
         }
         public function WEBParsing($url, $cookie=NULL, $headershow=TRUE, $postparam=NULL, $otherheader=NULL)
         {
+            if (!preg_match('/^(?:https?):\/\//', $url)) return false;
             $ch = curl_init();
+            $url = $this->linkencode($url);
             $opts = array(CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_URL => $url,
-                CURLOPT_TIMEOUT => 10,
-                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_TIMEOUT => 60,
+                CURLOPT_CONNECTTIMEOUT => 10,
                 CURLOPT_SSL_VERIFYPEER => FALSE,
                 CURLOPT_HEADER => $headershow,
                 CURLOPT_USERAGENT => $this->httph
@@ -35,6 +73,144 @@
             curl_close($ch);
             return ($data) ? $data : false;
         }
+        /**
+         * sucuri - sucuri 프록시 관련 쿠키 우회
+         * 소스 : https://github.com/organization/cloudflare-bypass
+         * 소스 : http://cafe.naver.com/gogoomas/337647
+         * @param  string $result 쿠키 string 입력
+         * @return strring         쿠키 데이터 출력
+         * 사용하지 않음.
+         */
+        /*public function sucuri($result)
+        {
+            if(strpos($result, 'sucuri_cloudproxy_js') !== false)
+            {
+                $cp_temp1 = explode('S=\'', $result);
+                $cp_temp2 = explode(';', $cp_temp1[1]);
+                $cp_script = $cp_temp2[0];
+                $cp_temp1 = explode('A=\'', $result);
+                $cp_temp2 = explode('\';', $cp_temp1[1]);
+                $cp_chlist = $cp_temp2[0];
+                $cp_charr = array();
+                for($i = 0; $i < 64; $i++)
+                    $cp_charr[$cp_chlist[$i]] = $i;
+                $cp_len = strlen($cp_script);
+                $cp_c = 0;
+                $cp_u = 0;
+                $cp_i = 0;
+                $cp_l = 0;
+                $cp_a = NULL;
+                $cp_r = NULL;
+                for($i = 0; $i < $cp_len; $i++)
+                {
+                    $cp_c = $cp_charr[$cp_script[$i]];
+                    $cp_u = ($cp_u << 6) + $cp_c;
+                    $cp_l += 6;
+                    while($cp_l >= 8)
+                        (($cp_a = ($cp_u >> ($cp_l -= 8)) & 0xff) || ($cp_i < ($cp_len - 2))) && ($cp_r .= chr($cp_a));
+                }
+                $cp_temp1 = explode('document.cookie=', $cp_r);
+                $cp_temp2 = explode('=', $cp_temp1[1]);
+                $cp_cnam = str_replace('"', '\'', $cp_temp2[0]);
+                $cp_cnam_split = explode('+', $cp_cnam);
+                $cp_cnam_split_cnt = count($cp_cnam_split);
+                $cp_cnam_string = NULL;
+                for($i = 0 ; $i < $cp_cnam_split_cnt; $i++)
+                {
+                    $cp_cnam = trim($cp_cnam_split[$i]);
+                    if(strpos($cp_cnam, 'slice') !== false)
+                    {
+                        $cp_temp1 = explode('\'', $cp_cnam);
+                        $cp_temp2 = explode('(', $cp_cnam);
+                        $cp_temp3 = explode(')', $cp_temp2[1]);
+                        $cp_temp4 = explode(',', $cp_temp3[0]);
+                        $cp_cnam_string .= substr($cp_temp1[1], trim($cp_temp4[0]), (intval(trim($cp_temp4[1])-trim($cp_temp4[0]))));
+                    }
+                    elseif(strpos($cp_cnam, 'charAt') !== false)
+                    {
+                        $cp_temp1 = explode('\'', $cp_cnam);
+                        $cp_temp2 = explode('(', $cp_cnam);
+                        $cp_temp3 = explode(')', $cp_temp2[1]);
+                        $cp_cnam_string .= substr($cp_temp1[1], trim($cp_temp3[0]), 1);
+                    }
+                    elseif(strpos($cp_cnam, 'String.fromCharCode') !== false)
+                    {
+                        $cp_temp1 = explode('(', $cp_cnam);
+                        $cp_temp2 = explode(')', $cp_temp1[1]);
+                        if(strpos($cp_temp2[0], '0x') !== false)
+                            $cp_cnam_string .= chr(hexdec($cp_temp2[0]));
+                        else
+                            $cp_cnam_string .= chr($cp_temp2[0]);
+                    }
+                    elseif(strpos($cp_cnam, 'substr') !== false)
+                    {
+                        $cp_temp1 = explode('\'', $cp_cnam);
+                        $cp_temp2 = explode('(', $cp_cnam);
+                        $cp_temp3 = explode(')', $cp_temp2[1]);
+                        $cp_temp4 = explode(',', $cp_temp3[0]);
+                        $cp_cnam_string .= substr($cp_temp1[1], trim($cp_temp4[0]), trim($cp_temp4[1]));
+                    }
+                    else
+                        $cp_cnam_string .= trim(trim($cp_cnam, '\''));
+                    $cp_cnam_string .= NULL;
+                }
+                //$cp_temp1 = explode('=', $cp_r);
+                $cp_temp1 = strpos($cp_r, '=');
+                $cp_temp2 = explode(';document.cookie', substr($cp_r, $cp_temp1+1)); //$cp_temp[1]
+                $cp_cval = str_replace('"', '\'', $cp_temp2[0]);
+                $cp_cval_split = explode('+', $cp_cval);
+                $cp_cval_split_cnt = count($cp_cval_split);
+                $cp_cval_string = null;
+                for($i = 0 ; $i < $cp_cval_split_cnt; $i++)
+                {
+                    $cp_nval = trim($cp_cval_split[$i]);
+                    if(strpos($cp_nval, 'slice') !== false)
+                    {
+                        $cp_temp1 = explode('\'', $cp_nval);
+                        $cp_temp2 = explode('(', $cp_nval);
+                        $cp_temp3 = explode(')', $cp_temp2[1]);
+                        $cp_temp4 = explode(',', $cp_temp3[0]);
+                        $cp_cval_string .= substr($cp_temp1[1], trim($cp_temp4[0]), (intval(trim($cp_temp4[1])-trim($cp_temp4[0]))));
+                    }
+                    elseif(strpos($cp_nval, 'charAt') !== false)
+                    {
+                        $cp_temp1 = explode("'", $cp_nval);
+                        $cp_temp2 = explode("(", $cp_nval);
+                        $cp_temp3 = explode(")", $cp_temp2[1]);
+                        $cp_cval_string .= substr($cp_temp1[1], trim($cp_temp3[0]), 1);
+                    }
+                    elseif(strpos($cp_nval, 'String.fromCharCode') !== false)
+                    {
+                        $cp_temp1 = explode('(', $cp_nval);
+                        $cp_temp2 = explode(')', $cp_temp1[1]);
+                        if(strpos($cp_temp2[0], '0x') !== false)
+                        {
+                            $cp_cval_string .= chr(hexdec($cp_temp2[0]));
+                        }
+                        else
+                        {
+                            $cp_cval_string .= chr($cp_temp2[0]);
+                        }
+                    }
+                    elseif(strpos($cp_nval, 'substr') !== false)
+                    {
+                        $cp_temp1 = explode('\'', $cp_nval);
+                        $cp_temp2 = explode('(', $cp_nval);
+                        $cp_temp3 = explode(')', $cp_temp2[1]);
+                        $cp_temp4 = explode(',', $cp_temp3[0]);
+                        $cp_cval_string .= substr($cp_temp1[1], trim($cp_temp4[0]), trim($cp_temp4[1]));
+                    }
+                    else
+                    {
+                        $cp_cval_string .= trim(trim($cp_nval, '\''));
+                    }
+                    $cp_cval_string .= NULL;
+                }
+
+                // String Output
+                return $cp_cnam_string."=".$cp_cval_string;
+            }
+        }*/
         public function FileRead($filename=NULL)
         {
             $filename = ($filename) ? $filename : $this->fname;
@@ -55,6 +231,9 @@
         }
         public function GetCookie()
         {
+            /*$data = $this->WEBParsing('http://wasabisyrup.com/archives/');
+            $cookie = $this->splits($data, '<script>', '</script>');
+            $cookie = $this->sucuri($cookie);*/
             $data = $this->WEBParsing('http://wasabisyrup.com/archives/455742', $cookie, true, 'pass=qndxkr',
                 array(
                     'Referer: http://wasabisyrup.com/'
@@ -88,7 +267,7 @@
                         $err='Not found comics data';
                         break;
                     default:
-                        $err='Unknown Error. Please send me an e-mail (contact@hakase.kr)';
+                        $err='Unknown Error. Please send me an e-mail (hakase@hakase.io)';
                 }
                 die(json_encode(array('error'=>$num, 'message'=>$err)));
             }

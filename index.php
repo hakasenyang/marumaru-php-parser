@@ -8,16 +8,6 @@
     if(isset($imgurl))
     {
         $a = parse_url($imgurl);
-        // Insecure checkup causes RFI
-        switch($a['scheme'])
-        {
-            case 'http':
-            case 'https':
-                break;
-            default:
-                exit;
-        }
-
         switch($a['host'])
         {
             case 'www.yuncomics.com':
@@ -40,7 +30,6 @@
                 exit();
             }
         }
-
         header('Cache-Control: max-age=86400, public');
         header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s',time() + 86400 ) . ' GMT' );
@@ -80,11 +69,11 @@ Number 2 : Cookie Get Error<br>
 Number 3 : Password Error (Protected archive) - Retry 10 minutes after view or retry about 3 times)<br>
 Number 4 : Not found comics data<br>
 Other error : read the message</p>
-<p>Output only JSON (Example) {"error":1,"message":"Error Message)"}<br>
+<p>Output only JSON (Example) {"error":1,"message":"Error Message"}<br>
 Only error / message method use</p>
 <h2>Etc...</h2>
 <p><strong><i><u><a href="https://github.com/hakasenyang/marumaru-php-parser" target="_blank">Open Source</a></u></i></strong></p>
-<p>Developed by <a href="https://keybase.io/hakasekr" rel="noreferrer" target="_blank">Hakase</a> (contact@hakase.kr)<br>
+<p>Developed by <a href="https://keybase.io/hakasekr" rel="noreferrer" target="_blank">Hakase</a> (hakase@hakase.io)<br>
 사용은 자유고 제한 없음. 애초에 제한 있으면 API 인증키를 넣겠지만 귀찮아서 안 넣음.
 </p>
 </body>
@@ -145,13 +134,12 @@ startdata:
     if ($image)
     {
         $jsonon = ($_GET['json'] == 1) ? true : false;
-
-        for($i=1;$i<count($aaa);$i++)
+        for($i=1,$cnt=(count($aaa));$i<$cnt;$i++)
             echo '<img src="?imgurl='.urlencode(trim(explode('"', $aaa[$i])[0])).'"><br>';
     }
     else
     {
-        for($i=1;$i<count($data2);$i++)
+        for($i=1,$cnt=count($data2);$i<$cnt;$i++)
         {
             if($num == trim(explode('" >', $data2[$i])[0]))
             {
@@ -180,7 +168,7 @@ startdata:
             else
                 $aad[] = ['next'=>null];
         }
-        for($i=2;$i<count($aaa)-1;$i++)
+        for($i=1,$cnt=(count($aaa));$i<$cnt;$i++)
             $aab[] = trim(explode('"', $aaa[$i])[0]);
 
         if($jsonon)
