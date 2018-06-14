@@ -34,7 +34,9 @@
         header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s',time() + 86400 ) . ' GMT' );
         header('Content-Type: image/jpeg');
-        echo $marumaru->WEBParsing($imgurl, NULL, NULL);
+        $ings = parse_url($imgurl);
+        $head = array('Referer: http://' . $ings['host']);
+        echo $marumaru->WEBParsing($imgurl, NULL, NULL, NULL, $head);
         exit;
     }
     if(!isset($num))
